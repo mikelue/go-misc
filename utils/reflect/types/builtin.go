@@ -24,12 +24,19 @@ Contains types of array for builting types of GoLang.
   array10IntType := ArrayTypes(10).OfInt()
 
 The instances for this reflection is not cached by this package.
+
+ErrorType
+
+As "reflect.Type" for "error" interface.
 */
 package types
 
 import (
 	"reflect"
 )
+
+// Instance of "reflect.Type" for "error"(interface)
+var ErrorType reflect.Type = reflect.TypeOf((*error)(nil)).Elem()
 
 // Contains instance of "reflect.Type" over builtin types of GoLang
 //
