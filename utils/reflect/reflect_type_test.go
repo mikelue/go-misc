@@ -78,8 +78,13 @@ var contextOfTypeExt = func() {
 			testedFuncInfo := TypeExtBuilder.NewByAny(sampleF1).
 				FuncInfo()
 
-			Expect(testedFuncInfo.InTypes()).To(HaveLen(2))
-			Expect(testedFuncInfo.OutTypes()).To(HaveLen(2))
+			testedInTypes := testedFuncInfo.InTypes()
+			Expect(testedInTypes).To(HaveLen(2))
+			Expect(testedInTypes[0].Kind()).To(BeEquivalentTo(reflect.String))
+
+			testedOutType := testedFuncInfo.OutTypes()
+			Expect(testedOutType).To(HaveLen(2))
+			Expect(testedOutType[0].Kind()).To(BeEquivalentTo(reflect.Int64))
 		})
 
 		It("Non-function", func() {

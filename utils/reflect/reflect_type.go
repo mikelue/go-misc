@@ -113,7 +113,7 @@ func (self *TypeExt) FuncInfo() *FuncInfo {
 	for i := 0; i < targetType.NumIn(); i++ {
 		inTypes = append(inTypes, TypeExtBuilder.NewByType(targetType.In(i)))
 	}
-	for i := 0; i < targetType.NumIn(); i++ {
+	for i := 0; i < targetType.NumOut(); i++ {
 		outTypes = append(outTypes, TypeExtBuilder.NewByType(targetType.Out(i)))
 	}
 
