@@ -1,13 +1,44 @@
 This project contains experimental frameworks/libraries used in my work over GoLang.
 
-## Utils
+# Projects
 
-`github.com/mikelue/go-misc/utils`: The utilities of GoLang
-* [`github.com/mikelue/go-misc/utils/reflect`](utils/reflect): The utilities based on [reflect](https://pkg.go.dev/reflect?tab=doc)
+## ./ioc/gin
 
-Usage for `go.mod`:
+Some enhances for [Gin Web Framework](https://onsi.github.io/ginkgo/). - See [README.md](./ioc/gin/README.md)
+
+package:
 ```go
-require (
-	"github.com/mikelue/go-misc/utils"
+import(
+	igin github.com/mikelue/go-misc/ioc/gin
 )
 ```
+
+The IOC of Gin can builds handler with **injected parameter** of supported types:
+
+```go
+ginHandler := builder.WrapToGinHandler()
+
+func yourHandler(
+	params &struct {
+		Id int `json:id`
+		String int `json:id`
+	},
+) igin.OutputHandler {
+	// Use params
+
+	return igin.JsonOutputHandler(http.StatusOK, &yourResult{})
+}
+```
+
+## ./utils
+
+The utilities of GoLang. See [README.md](./utils/README.md)
+
+package:
+```go
+import(
+	github.com/mikelue/go-misc/utils
+)
+```
+
+* `github.com/mikelue/go-misc/utils/reflect` - See [README.md](./utils/reflect/README.md)
