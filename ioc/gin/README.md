@@ -1,13 +1,6 @@
 This MVC framework is based on [Gin](https://onsi.github.io/ginkgo/).
 
-See [godoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gin?tab=doc) for API references.
-
-Importing:
-```go
-import(
-	igin "github.com/mikelue/go-misc/ioc/gin"
-)
-```
+**package**: `github.com/mikelue/go-misc/ioc/gin` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gin) for API references.
 
 ## Configuration and MvcBuilder
 

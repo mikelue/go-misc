@@ -2,16 +2,17 @@ This project contains experimental frameworks/libraries used in my work over GoL
 
 # Projects
 
+## ./ioc/frangipani
+
+A poor imitation of SpringFramework of Java.
+
+**package**: `github.com/mikelue/go-misc/ioc/frangipani` [README.md](./ioc/frangipani/README.md)
+
 ## ./ioc/gin
 
-Some enhancements for [Gin Web Framework](https://onsi.github.io/ginkgo/). See [README.md](./ioc/gin/README.md)
+**package**: `github.com/mikelue/go-misc/ioc/gin` [README.md](./ioc/gin/README.md)
 
-package:
-```go
-import(
-	igin github.com/mikelue/go-misc/ioc/gin
-)
-```
+Some enhancements for [Gin Web Framework](https://onsi.github.io/ginkgo/).
 
 The IOC of Gin can builds handler with **injected parameter** of supported types:
 
@@ -32,7 +33,9 @@ func yourHandler(
 
 ## ./ioc/gorm
 
-Some enhancements for [Gorm](http://gorm.io/). See [README.md](./ioc/gorm/README.md)
+**package**: `github.com/mikelue/go-misc/ioc/gorm` [README.md](./ioc/gorm/README.md)
+
+Some enhancements for [Gorm](http://gorm.io/).
 
 Error-free coding style:
 ```go
@@ -45,13 +48,9 @@ tmpl.Create(newObject)
 
 ## ./utils
 
-The utilities of GoLang. See [README.md](./utils/README.md)
+**package**: `github.com/mikelue/go-misc/utils` [README.md](./utils/README.md)
 
-package:
-```go
-import(
-	github.com/mikelue/go-misc/utils
-)
-```
+The utilities of GoLang.
 
-* `github.com/mikelue/go-misc/utils/reflect` - See [README.md](./utils/reflect/README.md)
+Sub-packages:
+* `github.com/mikelue/go-misc/utils/reflect` [README.md](./utils/reflect/README.md)

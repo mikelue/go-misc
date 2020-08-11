@@ -10,6 +10,8 @@
 This library depends on [gorm](https://gorm.io/),
 which provides some convenient features.
 
+**package**: `github.com/mikelue/go-misc/ioc/gorm` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gorm)
+
 # Features <a name="features"></a>
 
 ## Error-Free operator <a name="efo"></a>
