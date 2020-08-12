@@ -31,6 +31,7 @@ var _ = Describe("logrusDriver", func() {
 			logResult := stringCapture.String()
 
 			Expect(logResult).To(ContainSubstring("hello-1"))
+			Expect(logResult).To(ContainSubstring("logger=log.g1"))
 			Expect(logResult).ToNot(ContainSubstring("hello-2"))
 		})
 
@@ -42,6 +43,8 @@ var _ = Describe("logrusDriver", func() {
 
 			logResult := stringCapture.String()
 
+			Expect(logResult).To(ContainSubstring("logger=log.g1"))
+			Expect(logResult).To(ContainSubstring("logger=log.s1"))
 			Expect(logResult).To(And(ContainSubstring("hello-1"), ContainSubstring("hello-3")))
 			Expect(logResult).ToNot(Or(ContainSubstring("hello-2"), ContainSubstring("hello-4")))
 		})

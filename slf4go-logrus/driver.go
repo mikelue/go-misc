@@ -108,7 +108,7 @@ func (self *logrusDriver) Print(l *l4.Log) {
 	// :~)
 
 	entry := lr.NewEntry(logger)
-	entry.WithFields(fields)
+	entry = entry.WithFields(fields)
 
 	switch l.Level {
 	case l4.TraceLevel:
