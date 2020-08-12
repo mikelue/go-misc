@@ -2,13 +2,15 @@ This project contains experimental frameworks/libraries used in my work over GoL
 
 # Projects
 
-## ./ioc/frangipani
+## IoC(Inverse of Control) Related
+
+### go-misc/ioc/frangipani
 
 A poor imitation of SpringFramework of Java.
 
 **package**: `github.com/mikelue/go-misc/ioc/frangipani` [README.md](./ioc/frangipani/README.md)
 
-## ./ioc/gin
+### go-misc/ioc/gin
 
 **package**: `github.com/mikelue/go-misc/ioc/gin` [README.md](./ioc/gin/README.md)
 
@@ -30,8 +32,7 @@ func yourHandler(
 	return igin.JsonOutputHandler(http.StatusOK, &yourResult{})
 }
 ```
-
-## ./ioc/gorm
+### go-misc/ioc/gorm
 
 **package**: `github.com/mikelue/go-misc/ioc/gorm` [README.md](./ioc/gorm/README.md)
 
@@ -46,7 +47,13 @@ tmpl := NewDbTemplate(db)
 tmpl.Create(newObject)
 ```
 
-## ./utils
+## go-misc/slf4go-logrus
+
+**package**: `github.com/mikelue/go-misc/slf4go-logrus` [README.md](./slf4go-logrus/README.md)
+
+This packages contains driver of [slf4go](https://github.com/go-eden/slf4go) with **"named logger"** by [logrus](https://github.com/sirupsen/logrus).
+
+## go-misc/utils
 
 **package**: `github.com/mikelue/go-misc/utils` [README.md](./utils/README.md)
 
