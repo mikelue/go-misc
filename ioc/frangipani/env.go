@@ -11,7 +11,7 @@ The profile of application is defined by property of "frangipani.profiles.active
 
 For example(by "viper"):
 
-  your_app --frangipani.profiles.active=cus1,cus2
+  your_app -frangipani.profiles.active=cus1,cus2
 
 */
 package frangipani
@@ -24,7 +24,7 @@ import (
 // Property name for "frangipani.profiles.active"
 const PROP_ACITVE_PROFILES = "frangipani.profiles.active"
 
-// "deafult" profile
+// "default" value of profile
 const DEFAULT_PROFILE = "default"
 
 // Global space to construct "Environment"

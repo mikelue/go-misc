@@ -55,4 +55,4 @@ ginkgo --focus 'Create' -- -gorm.log-mode=true
 
 `gorm.log-mode` - see [gorm/DB.LogMode](https://godoc.org/github.com/jinzhu/gorm#DB.LogMode)
 * `true`(`1`) - Verbose logging by *gorm*
-* `false0`(`0`)(default) - For logging by *gorm*
+* `false`(`0`)(default) - For logging by *gorm*
