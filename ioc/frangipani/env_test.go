@@ -41,5 +41,6 @@ var _ = Describe("Environment", func() {
 		Entry("nothing", "", []interface{}{ DEFAULT_PROFILE }),
 		Entry("2 profiles", "a1,b2", []interface{}{ "b2", "a1", DEFAULT_PROFILE }),
 		Entry("2 profiles(trimming space)", "  a3 , c3  ,,", []interface{}{ "a3", "c3", DEFAULT_PROFILE }),
+		Entry("duplicated profiles", "a1,b2,a1", []interface{}{ "b2", "a1", DEFAULT_PROFILE }),
 	)
 })

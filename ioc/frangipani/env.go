@@ -58,6 +58,9 @@ type Environment interface {
 	// Checks whether or not the profiles is enabled in current application.
 	AcceptsProfiles(profiles Profiles) bool
 	// Gets current active profiles.
+	//
+	// Whether or not there is viable "frangipani.profiles.active" property,
+	// the "default" profile will always be appended if it is not existing in the property.
 	GetActiveProfiles() []string
 }
 
@@ -75,19 +78,32 @@ func (self *mapBasedEnv) GetActiveProfiles() []string {
 	return profiles
 }
 func (self *mapBasedEnv) processActiveProfiles() []string {
-	profiles := make([]string, 1)
-	profiles[0] = DEFAULT_PROFILE
+	uniqueProfiles := &uniqueStringSlice {
+		values: []string{},
+		checking: map[string]bool{},
+	}
 
+	/**
+	 * Adds effective profiles
+	 */
 	profilesByProperty := strings.Split(self.GetProperty(PROP_ACITVE_PROFILES), ",")
 	for _, profile := range profilesByProperty {
 		profile = strings.TrimSpace(profile)
-
 		if profile != "" {
-			profiles = append(profiles, profile)
+			uniqueProfiles.add(profile)
 		}
 	}
+	// :~)
 
-	return profiles
+	/**
+	 * Adds default profile
+	 */
+	if !uniqueProfiles.has(DEFAULT_PROFILE) {
+		uniqueProfiles.add(DEFAULT_PROFILE)
+	}
+	// :~)
+
+	return uniqueProfiles.values
 }
 func (self *mapBasedEnv) matchProfile(profile string) bool {
 	for _, activeProfile := range self.activeProfiles {
@@ -97,4 +113,21 @@ func (self *mapBasedEnv) matchProfile(profile string) bool {
 	}
 
 	return false
+}
+
+type uniqueStringSlice struct {
+	values []string
+	checking map[string]bool
+}
+func (self *uniqueStringSlice) add(value string) {
+	if self.has(value) {
+		return
+	}
+
+	self.values = append(self.values, value)
+	self.checking[value] = true
+}
+func (self *uniqueStringSlice) has(value string) bool {
+	_, ok := self.checking[value]
+	return ok
 }
