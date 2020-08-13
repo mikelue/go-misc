@@ -46,7 +46,7 @@ func (self IEnvBuilder) NewByViper(viper *viper.Viper) Environment {
 // Constructs new environment by "map[string]interface{}".
 func (IEnvBuilder) NewByMap(props map[string]interface{}) Environment {
 	newEnv := &mapBasedEnv{ PropertyResolver: PropertyResolverBuilder.NewByMap(props) }
-	newEnv.activeProfiles = newEnv.GetActiveProfiles()
+	newEnv.activeProfiles = newEnv.processActiveProfiles()
 	return newEnv
 }
 
@@ -70,6 +70,11 @@ func (self *mapBasedEnv) AcceptsProfiles(profiles Profiles) bool {
 	return profiles.Matches(self.matchProfile)
 }
 func (self *mapBasedEnv) GetActiveProfiles() []string {
+	profiles := make([]string, len(self.activeProfiles))
+	copy(profiles, self.activeProfiles)
+	return profiles
+}
+func (self *mapBasedEnv) processActiveProfiles() []string {
 	profiles := make([]string, 1)
 	profiles[0] = DEFAULT_PROFILE
 
