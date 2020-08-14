@@ -109,7 +109,7 @@ func (self IRollbackExecBuilder) NewCopyFiles(dir string, files ...string) Rollb
 //
 // The key of parameters for the temp directory is "PKEY_TEMP_DIR".
 //
-// The temp folder would be removed after the execution.
+// The temp directory would be removed after the execution.
 func (self IRollbackExecBuilder) NewTmpDir(tempName string) RollbackContainerP {
 	return &tempDirExecutorImpl{ tempName: tempName }
 }
