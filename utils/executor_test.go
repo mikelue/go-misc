@@ -182,6 +182,24 @@ var describeOfIRollbackExecBuilder = func() {
 	})
 
 	Context("rollbackExecutorPImpl", func() {
+		It("Setup has error for containers", func() {
+			err := RollbackExecutor.RunP(
+				func(Params) {},
+				&errorContainer{ false, false }, &errorContainer{ true, false },
+			)
+
+			Expect(err).To(MatchError("Setup-Error"))
+		})
+
+		It("Teardown has error for containers", func() {
+			err := RollbackExecutor.RunP(
+				func(Params) {},
+				&errorContainer{ false, false }, &errorContainer{ false, true },
+			)
+
+			Expect(err).To(MatchError("TearDown-Error"))
+		})
+
 		Describe("Sequence of multiple containers", func() {
 			/**
 			 * Runs the result
@@ -240,6 +258,27 @@ var describeOfIRollbackExecBuilder = func() {
 			// :~)
 		})
 	})
+}
+
+type errorContainer struct {
+	setupError bool
+	tearDownError bool
+}
+func(self *errorContainer) Setup() (Params, error) {
+	var err error
+	if self.setupError {
+		err = fmt.Errorf("Setup-Error")
+	}
+
+	return nil, err
+}
+func(self *errorContainer) TearDown(Params) error {
+	var err error
+	if self.tearDownError {
+		err = fmt.Errorf("TearDown-Error")
+	}
+
+	return err
 }
 
 type numberedContainer struct {

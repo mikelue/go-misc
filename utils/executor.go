@@ -149,11 +149,13 @@ func (self *copyFilesExecutorImpl) Setup() (err error) {
 	self.copiedFiles = make([]string, 0, len(self.srcFiles))
 
 	for _, srcFile := range self.srcFiles {
-		var dstFile string
-		dstFile, err = self.copyTo(srcFile)
-		if err == nil {
-			self.copiedFiles = append(self.copiedFiles, dstFile)
+		dstFile, copyErr := self.copyTo(srcFile)
+		if copyErr != nil {
+			err = copyErr
+			continue
 		}
+
+		self.copiedFiles = append(self.copiedFiles, dstFile)
 	}
 
 	return
@@ -161,7 +163,9 @@ func (self *copyFilesExecutorImpl) Setup() (err error) {
 func (self *copyFilesExecutorImpl) TearDown() (err error) {
 	for _, file := range self.copiedFiles {
 		// Try to remove all of the files
-		err = os.Remove(file)
+		if rmErr := os.Remove(file); rmErr != nil {
+			err = rmErr
+		}
 	}
 
 	self.copiedFiles = nil
@@ -249,7 +253,7 @@ type envExecutorImpl struct {
 	neededVars map[string]string
 	oldVars map[string]string
 }
-func (self *envExecutorImpl) Setup() error {
+func (self *envExecutorImpl) Setup() (err error) {
 	/**
 	 * Set environment variable and backup old value
 	 */
@@ -258,13 +262,13 @@ func (self *envExecutorImpl) Setup() error {
 			self.oldVars[k] = oldValue
 		}
 
-		if err := os.Setenv(k, v); err != nil {
-			return err
+		if setErr := os.Setenv(k, v); setErr != nil {
+			err = setErr
 		}
 	}
 	// :~)
 
-	return nil
+	return
 }
 func (self *envExecutorImpl) TearDown() (err error) {
 	/**
@@ -272,7 +276,9 @@ func (self *envExecutorImpl) TearDown() (err error) {
 	 */
 	for k, v := range self.oldVars {
 		// Try to revert each of modified env-variables
-		err = os.Setenv(k, v)
+		if setErr := os.Setenv(k, v); setErr != nil {
+			err = setErr
+		}
 	}
 	// :~)
 
@@ -282,7 +288,9 @@ func (self *envExecutorImpl) TearDown() (err error) {
 	for k := range self.neededVars {
 		if _, existedInOld := self.oldVars[k]; !existedInOld {
 			// Try to un-set each of introduced env-variables
-			err = os.Unsetenv(k)
+			if unsetErr := os.Unsetenv(k); unsetErr != nil {
+				err = unsetErr
+			}
 		}
 	}
 	// :~)
@@ -294,20 +302,21 @@ func (self *envExecutorImpl) TearDown() (err error) {
 type rollbackExecutorPImpl []RollbackContainerP
 func (self rollbackExecutorPImpl) Run(callback func(params Params)) (err error) {
 	allParams := make(Params)
+	lastSetupIndex := 0
 
 	defer func() {
-		for i := len(self) - 1; i >= 0; i-- {
-			err = self[i].TearDown(allParams)
-			if err != nil {
-				return
-			}
-		}
-
 		if p := recover(); p != nil {
 			if panicAsErr, ok := p.(error); ok {
 				err = panicAsErr
 			} else {
 				err = fmt.Errorf("Panic of callback: %v", p)
+			}
+		}
+
+		for i := lastSetupIndex - 1; i >= 0; i-- {
+			if tearDownErr := self[i].TearDown(allParams); tearDownErr != nil {
+				err = tearDownErr
+				return
 			}
 		}
 	}()
@@ -317,12 +326,13 @@ func (self rollbackExecutorPImpl) Run(callback func(params Params)) (err error) 
 		currentParams, err = container.Setup()
 
 		if err != nil {
-			return
+			return err
 		}
 
 		for k, v := range currentParams {
 			allParams[k] = v
 		}
+		lastSetupIndex++
 	}
 
 	callback(allParams)
