@@ -26,6 +26,13 @@ var describeOfIRollbackExecBuilder = func() {
 			 */
 			Expect(testedDir).To(BeADirectory())
 			// :~)
+
+			/**
+			 * Asserts the mode(can read/write/execute) of directory
+			 */
+			info, _ := os.Stat(testedDir)
+			Expect(info.Mode() & 0700).To(BeEquivalentTo(0700))
+			// :~)
 		}, testedContainer)
 		Expect(err).To(Succeed())
 

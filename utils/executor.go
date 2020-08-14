@@ -197,7 +197,7 @@ type dirExecutorImpl struct {
 	dirName string
 }
 func (self *dirExecutorImpl) Setup() (err error) {
-	err = os.MkdirAll(self.dirName, os.ModeDir)
+	err = os.MkdirAll(self.dirName, os.ModePerm)
 	return
 }
 func (self *dirExecutorImpl) TearDown() (err error) {
