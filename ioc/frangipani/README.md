@@ -33,3 +33,7 @@ fg.EnvBuilder.NewByViper(
 ### Profile
 
 You can access current active profiles by `Environment.GetActiveProfiles()`.
+
+## Profiles
+
+The property used for active profiles is `fgapp.profiles.active`.

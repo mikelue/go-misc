@@ -7,11 +7,11 @@ You can construct "Environment" by "EnvBuilder.NewByMap" or "EnvBuilder.NewByVip
 
 Profile
 
-The profile of application is defined by property of "frangipani.profiles.active".
+The profile of application is defined by property of "fgapp.profiles.active".
 
 For example(by "viper"):
 
-  your_app -frangipani.profiles.active=cus1,cus2
+  your_app -fgapp.profiles.active=cus1,cus2
 
 */
 package frangipani
@@ -21,8 +21,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Property name for "frangipani.profiles.active"
-const PROP_ACITVE_PROFILES = "frangipani.profiles.active"
+// Property name for "fgapp.profiles.active"
+const PROP_ACITVE_PROFILES = "fgapp.profiles.active"
 
 // "default" value of profile
 const DEFAULT_PROFILE = "default"
@@ -59,7 +59,7 @@ type Environment interface {
 	AcceptsProfiles(profiles Profiles) bool
 	// Gets current active profiles.
 	//
-	// Whether or not there is viable "frangipani.profiles.active" property,
+	// Whether or not there is viable "fgapp.profiles.active" property,
 	// the "default" profile will always be appended if it is not existing in the property.
 	GetActiveProfiles() []string
 }
