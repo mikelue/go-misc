@@ -1,0 +1,33 @@
+name: Tests all of the modules
+on: [ "push" ]
+  # push:
+    # branches: [ master ]
+  # pull_request:
+    # branches: [ master ]
+
+jobs:
+  vet-and-test:
+    name: Tests modules
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: ["utils", "slf4go-logrus", "ginkgo", "ioc/frangipani", "ioc/gin", "ioc/gorm"]
+        go-version: ["1.14", "1.15"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Test under go-misc/${{ matrix.module }}
+        run: |
+          cd ${{ matrix.module }}
+          go test -coverprofile=coverage.txt -covermode=atomic -race -vet "" ./...
+          bash <(curl -s https://codecov.io/bash)

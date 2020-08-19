@@ -71,7 +71,7 @@ func (self ValueExt) GetFieldValue(tree ...string) ValueExt {
 
 		currentValue = currentValue.FieldByName(fieldName)
 		if !currentValue.IsValid() {
-			panic(fmt.Errorf("Field[%s] is INVALID(IsValid() == true)", fieldName))
+			panic(fmt.Errorf("Field[%s] is INVALID(!IsValid())", fieldName))
 		}
 	}
 
