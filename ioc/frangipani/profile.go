@@ -1,3 +1,13 @@
+/*
+Profile
+
+The profile of application is defined by value of "fgapp.profiles.active".
+
+For example(by "viper")：
+
+	viperObj := viper.New()
+	viperObj.Set(PROP_ACITVE_PROFILES, "a1,a2")
+*/
 package frangipani
 
 import (

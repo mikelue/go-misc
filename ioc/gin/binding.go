@@ -3,36 +3,36 @@ MvcHandler
 
 A MVC handler can be any function with ruled types of parameter and defined returned types.
 
-  type MvcHandler interface{}
+    type MvcHandler interface{}
 
 You can define handler of supported:
 
-  func(req *http.Request, params *gin.Params) OutputHandler {
-    return TextOutputHandler("Hello World")
-  }
+    func(req *http.Request, params *gin.Params) OutputHandler {
+        return TextOutputHandler("Hello World")
+    }
 
-  func(
-    data *struct {
-      // Binding data from form(or query string)
-      Name string `form:"name" default:"anonymous"`
-      // Binding data from uri
-      Age int `uri:"id" default:"0"`
-      // Binding data from header
-      SessionId string `header:"session_id"`
-      // Binding data from JSON
-      Weight int `json:"weight"`
-    },
-  ) OutputHandler {
-    return TextOutputHandler("Hello World")
-  }
+    func(
+        data *struct {
+            // Binding data from form(or query string)
+            Name string `form:"name" default:"anonymous"`
+            // Binding data from uri
+            Age int `uri:"id" default:"0"`
+            // Binding data from header
+            SessionId string `header:"session_id"`
+            // Binding data from JSON
+            Weight int `json:"weight"`
+        },
+    ) OutputHandler {
+        return TextOutputHandler("Hello World")
+    }
 
 WrapToGinHandler
 
 After you define the MVC handler, you could use "MvcBuilder.WrapToGinHandler()" to
 convert your handler to "gin.HandlerFunc".
 
-  mvcBuilder := NewMvcConfig().ToBuilder()
-  engine.Get("/your-web-service", mvcBuilder.WrapToGinHandler(your_mvc_handler))
+    mvcBuilder := NewMvcConfig().ToBuilder()
+    engine.Get("/your-web-service", mvcBuilder.WrapToGinHandler(your_mvc_handler))
 
 Parameters of Handler
 
@@ -66,32 +66,32 @@ Tagging Struct
 
 There are various definition of tags could be used on struct:
 
-  type MyData struct {
-    // Binding data from form(or query string)
-    Name string `form:"name"`
-    // Binding data from uri
-    Age int `uri:"id"`
-    // Binding data from header
-    SessionId string `header:"session_id"`
-    // Binding data from JSON
-    Weight int `json:"weight"`
-  }
+    type MyData struct {
+        // Binding data from form(or query string)
+        Name string `form:"name"`
+        // Binding data from uri
+        Age int `uri:"id"`
+        // Binding data from header
+        SessionId string `header:"session_id"`
+        // Binding data from JSON
+        Weight int `json:"weight"`
+    }
 
 Form(Query string), header, or JSON body
 
-  form:"field_1" - Use query parameter param_name_1 as binding value
-  form:"field_2" - Must be bool type, used to indicate whether or not has viable value for this parameter
-  header:"header_value_1" - Use the value of URI parameter pm_1 as binding value
-  header:"header_value_2" - Use the form value of in_1 as binding value
-  uri:"uri_v_1" - Must be bool type, used to indicate whether or not has viable value for this parameter
-  uri:"uri_v_2" - Use the header value of Content-Type as binding value
-  json:"v1" - Must be bool type, used to indicate whether or not has viable value for this parameter
-  json:"v2" - Must be bool type, used to indicate whether or not has viable value for this parameter
+    form:"field_1" - Use query parameter param_name_1 as binding value
+    form:"field_2" - Must be bool type, used to indicate whether or not has viable value for this parameter
+    header:"header_value_1" - Use the value of URI parameter pm_1 as binding value
+    header:"header_value_2" - Use the form value of in_1 as binding value
+    uri:"uri_v_1" - Must be bool type, used to indicate whether or not has viable value for this parameter
+    uri:"uri_v_2" - Use the header value of Content-Type as binding value
+    json:"v1" - Must be bool type, used to indicate whether or not has viable value for this parameter
+    json:"v2" - Must be bool type, used to indicate whether or not has viable value for this parameter
 
 TODO-Default Value
 
-  default:"20" - Gives value 20 if the value of binding is empty
-  default:"[20,40,30]" - Gives value [20, 40, 30](as array, no space)if the value of binding is empty
+    default:"20" - Gives value 20 if the value of binding is empty
+    default:"[20,40,30]" - Gives value [20, 40, 30](as array, no space)if the value of binding is empty
 
 By default, if the value of binding is existing, the framework would use the default value of binding type.
 

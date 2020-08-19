@@ -1,3 +1,21 @@
+/*
+DbException
+
+The content of panic raised by this package is type of "DbException".
+
+    defer func() {
+        if p := recover(); p != nil {
+            dbException := p.(*DbException)
+
+            // dbException.DetailError() - Source error/panic
+            // dbException.GetCallerFile() - The source file of caller
+            // dbException.GetCallerLine() - The line of caller in source file
+        }
+    }()
+
+    // dbTmpl.Create(...)
+    // dbTmpl.Find(...)
+*/
 package gorm
 
 import (

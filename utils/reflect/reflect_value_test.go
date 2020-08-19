@@ -118,10 +118,10 @@ var contextOfValueExt = func() {
 		)
 	})
 
-	DescribeTable("IsArray",
+	DescribeTable("IsArrayOrSlice",
 		func(v interface{}, expected bool) {
 			testedValueExt := ValueExtBuilder.NewByAny(v)
-			Expect(testedValueExt.IsArray()).To(BeEquivalentTo(expected))
+			Expect(testedValueExt.IsArrayOrSlice()).To(BeEquivalentTo(expected))
 		},
 		Entry("Slice", []string {}, true),
 		Entry("Array", [3]int{}, true),

@@ -7,8 +7,6 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	mrt "github.com/mikelue/go-misc/utils/runtime"
 )
 
 var _ = Describe("Rollback executors", func() {
@@ -151,9 +149,8 @@ var describeOfIRollbackExecBuilder = func() {
 			tempFile1, tempFile2 string
 		)
 		tempDirContainer := RollbackContainerBuilder.NewTmpDir("rcf-*")
-		currentDir := mrt.CallerUtils.GetDirOfSource()
-		file1 := fmt.Sprintf("%s/%s", currentDir, "sample-1.txt")
-		file2 := fmt.Sprintf("%s/%s", currentDir, "sample-2.txt")
+		file1 := fmt.Sprintf("%s/%s", testSourceDir, "sample-1.txt")
+		file2 := fmt.Sprintf("%s/%s", testSourceDir, "sample-2.txt")
 
 		/**
 		 * Setup temporary directory

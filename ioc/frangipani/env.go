@@ -4,15 +4,6 @@ Environment
 An environment a container of properties and profile for your application.
 
 You can construct "Environment" by "EnvBuilder.NewByMap" or "EnvBuilder.NewByViper".
-
-Profile
-
-The profile of application is defined by property of "fgapp.profiles.active".
-
-For example(by "viper"):
-
-  your_app -fgapp.profiles.active=cus1,cus2
-
 */
 package frangipani
 

@@ -1,3 +1,20 @@
+/*
+This package provides error-free methods over "*gorm.DB" object.
+
+DbTemplate
+
+You can use "NewDbTemplate()" to convert a "*gorm.DB" to use the error-free methods.
+
+    dbTmpl := NewDbTemplate(gormDb)
+    // Panic if something gets wrong
+    dbTmpl.Create(yourObj)
+
+SoftTx
+
+You can implements this interface to use "DbTemplate.SoftTransaction()".
+
+"SoftTxFunc" is funcational style of "SoftTx".
+*/
 package gorm
 
 import (

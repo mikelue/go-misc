@@ -5,7 +5,11 @@ import (
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	mrt "github.com/mikelue/go-misc/utils/runtime"
 )
+
+var testSourceDir = mrt.CallerUtils.GetDirOfSource()
 
 func TestByGinkgo(t *testing.T) {
 	RegisterFailHandler(Fail)

@@ -3,9 +3,9 @@ Rollback
 
 While we are testing, there are something we like to set-up. For example:
 
-	1. make a temporary directory
-	2. copy some test files to that directory
-	3. sets some environment variable
+    1. make a temporary directory
+    2. copy some test files to that directory
+    3. sets some environment variable
 
 After we finish our test, the environment should be as same as nothing happened.
 
@@ -17,18 +17,11 @@ RollbackExecutor
 
 Using this space to perform execution surrounding by some containers.
 
+See examples of this documentation.
+
 RollbackContainerBuilder
 
-Using this space to constructs built-in containers.
-
-  RollbackExecutor.Run(
-    RollbackContainerBuilder.NewEnv(
-      map[string]string {
-		"XDG_CONFIG_HOME": "your_dir",
-	  }
-	),
-    RollbackContainerBuilder.NewDir("another_dir"),
-  )
+See examples of this documentation.
 */
 package utils
 
@@ -84,24 +77,24 @@ type RollbackContainerP interface {
 }
 
 // Method space to build new instances of executors
-var RollbackContainerBuilder IRollbackExecBuilder = 0
+var RollbackContainerBuilder IRollbackContainerBuilder = 0
 
-type IRollbackExecBuilder int
+type IRollbackContainerBuilder int
 
 // Converts a "RollbackExecutorP" to a "RollbackExecutor"
-func (IRollbackExecBuilder) ToContainer(containerP RollbackContainerP) RollbackContainer {
+func (IRollbackContainerBuilder) ToContainer(containerP RollbackContainerP) RollbackContainer {
 	return &fromPContainer{ containerP }
 }
 
 // Converts a "RollbackExecutor" to a "RollbackExecutorP"
-func (IRollbackExecBuilder) ToContainerP(container RollbackContainer) RollbackContainerP {
+func (IRollbackContainerBuilder) ToContainerP(container RollbackContainer) RollbackContainerP {
 	return &simpleContainerP{ container }
 }
 
 // Constructs an new container with copy/removal of files.
 //
 // The copied files would be remove by the rollback.
-func (self IRollbackExecBuilder) NewCopyFiles(dir string, files ...string) RollbackContainer {
+func (self IRollbackContainerBuilder) NewCopyFiles(dir string, files ...string) RollbackContainer {
 	return &copyFilesExecutorImpl { destDir: dir, srcFiles: files }
 }
 
@@ -110,21 +103,21 @@ func (self IRollbackExecBuilder) NewCopyFiles(dir string, files ...string) Rollb
 // The key of parameters for the temp directory is "PKEY_TEMP_DIR".
 //
 // The temp directory would be removed after the execution.
-func (self IRollbackExecBuilder) NewTmpDir(tempName string) RollbackContainerP {
+func (self IRollbackContainerBuilder) NewTmpDir(tempName string) RollbackContainerP {
 	return &tempDirExecutorImpl{ tempName: tempName }
 }
 
 // Constructs an new container with creation/removal a directory.
 //
 // The directory would be removed after the execution.
-func (self IRollbackExecBuilder) NewDir(dir string) RollbackContainer {
+func (self IRollbackContainerBuilder) NewDir(dir string) RollbackContainer {
 	return &dirExecutorImpl{ dir }
 }
 
 // Constructs an new container with modified environment.
 //
 // The "os.Environ()" would be reverted to original status after the execution.
-func (self IRollbackExecBuilder) NewEnv(changedEnvVars map[string]string) RollbackContainer {
+func (self IRollbackContainerBuilder) NewEnv(changedEnvVars map[string]string) RollbackContainer {
 	return &envExecutorImpl{
 		changedEnvVars,
 		map[string]string{},
@@ -134,7 +127,7 @@ func (self IRollbackExecBuilder) NewEnv(changedEnvVars map[string]string) Rollba
 // Constructs an new container with modified working directory.
 //
 // The "os.Chdir()" would be used to revert the working dictionary.
-func (self IRollbackExecBuilder) NewChdir(targetDir string) RollbackContainer {
+func (self IRollbackContainerBuilder) NewChdir(targetDir string) RollbackContainer {
 	return &chdirExecutorImpl{
 		targetDir: targetDir,
 	}

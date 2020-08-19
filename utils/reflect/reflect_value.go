@@ -109,7 +109,7 @@ func (self ValueExt) RecursiveIndirect() ValueExt {
 }
 
 // Returns true value if the value is array or slice
-func (self ValueExt) IsArray() bool {
+func (self ValueExt) IsArrayOrSlice() bool {
 	switch reflect.Value(self).Kind() {
 	case reflect.Slice, reflect.Array:
 		return true

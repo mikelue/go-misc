@@ -1,13 +1,13 @@
-This MVC framework is based on [Gin](https://onsi.github.io/ginkgo/).
-
 **package**: `github.com/mikelue/go-misc/ioc/gin` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gin) for API references.
+
+This MVC framework is based on [Gin](https://onsi.github.io/ginkgo/).
 
 ## Configuration and MvcBuilder
 
 ```go
 config := igin.NewMvcConfig().
-	RegisterParamResolvers(...).
-	RegisterErrorHandlers(...)
+    RegisterParamResolvers(...).
+    RegisterErrorHandlers(...)
 
 builder := config.ToBuilder()
 ```
@@ -19,13 +19,16 @@ You can use [struct tag](https://golang.org/ref/spec#Struct_types) to **inject**
 ```go
 
 type YourParams struct {
-	Id int `json:"id"`
-	Name string `json:"name"`
+    Id int `json:"id"`
+    Name string `json:"name"`
 }
 
 func yourHandler(params &YourParams) OutputBody {
-	// Use params to process your function
+    // Use params to process your function
 
-	return OutputBody(http.StatusOK, yourData)
+    return OutputBody(http.StatusOK, yourData)
 }
 ```
+
+<!-- vim: expandtab tabstop=4 shiftwidth=4
+-->

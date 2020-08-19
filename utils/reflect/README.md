@@ -1,6 +1,6 @@
-This package contains some enhancements for manipulating [reflect](https://pkg.go.dev/reflect?tab=doc) of GoLang.
-
 **package**: `github.com/mikelue/go-misc/utils` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/utils)
+
+This package contains some enhancements for manipulating [reflect](https://pkg.go.dev/reflect?tab=doc) of GoLang.
 
 ## reflect/
 

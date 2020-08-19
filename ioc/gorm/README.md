@@ -1,16 +1,16 @@
+**package**: `github.com/mikelue/go-misc/ioc/gorm` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gorm)
+
 **Table of Content**
 
 * [Features](#features)
 * [Error-Free operator](#efo)
-	* [DbTemplate](#dbtemplate)
-	* [AssociationTemplate](#associationtemplate)
+    * [DbTemplate](#dbtemplate)
+    * [AssociationTemplate](#associationtemplate)
 * [Test environment](#test-environment)
-	* [Flags](#test-flags)
+    * [Flags](#test-flags)
 
 This library depends on [gorm](https://gorm.io/),
 which provides some convenient features.
-
-**package**: `github.com/mikelue/go-misc/ioc/gorm` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gorm)
 
 # Features <a name="features"></a>
 
@@ -56,3 +56,6 @@ ginkgo --focus 'Create' -- -gorm.log-mode=true
 `gorm.log-mode` - see [gorm/DB.LogMode](https://godoc.org/github.com/jinzhu/gorm#DB.LogMode)
 * `true`(`1`) - Verbose logging by *gorm*
 * `false`(`0`)(default) - For logging by *gorm*
+
+<!-- vim: expandtab tabstop=4 shiftwidth=4
+-->

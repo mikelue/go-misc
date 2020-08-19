@@ -1,6 +1,7 @@
 package gorm
 
 import (
+	"fmt"
 	"flag"
 	"testing"
 	"github.com/jinzhu/gorm"
@@ -24,13 +25,7 @@ func TestByGinkgo(t *testing.T) {
 var db *gorm.DB
 
 var _ = BeforeSuite(func() {
-	var err error
-	db, err = gorm.Open("sqlite3", "file:testdb?mode=memory&cache=shared")
-	if err != nil {
-		panic(err)
-	}
-
-	db.LogMode(*gorm_logMode)
+	db = newDbBySqliteMemory("testDb")
 	setupSchema()
 })
 var _ = AfterSuite(func() {
@@ -47,4 +42,25 @@ func setupSchema() {
 		len(errors) > 0 {
 		panic(errors)
 	}
+}
+
+func setupExampleSchema(db *gorm.DB) {
+	if errors := db.AutoMigrate(&Company{}, &Employee{}).
+		GetErrors();
+		len(errors) > 0 {
+		panic(errors)
+	}
+}
+
+func newDbBySqliteMemory(name string) *gorm.DB {
+	db, err := gorm.Open("sqlite3", fmt.Sprintf("file:%s?mode=memory&cache=shared", name))
+	db.LogMode(*gorm_logMode)
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+func exampleDb() *gorm.DB {
+	return newDbBySqliteMemory("exampleDb")
 }

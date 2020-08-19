@@ -1,11 +1,14 @@
 package gin
 
 import (
+	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
 func text3OutputFunc(context *gin.Context) error {
-	/* Your implementation */
+	context.Data(http.StatusNotAcceptable, "plain/text", []byte("This is fine"))
 	return nil
 }
 
@@ -14,9 +17,21 @@ func text3HandlerByFunc() OutputHandler {
 }
 
 func ExampleOutputHandlerFunc() {
-	builder := NewMvcConfig().ToBuilder()
-	handler := builder.WrapToGinHandler(text3Handler)
-	// ginEngine.Get("/text-3", handler)
+	/**
+	 * Prepares request
+	 */
+	sampleContext, resp := newContext()
+	// :~)
 
-	_ = handler
+	/**
+	 * Wraps the customized handler
+	 */
+	handler := NewMvcConfig().ToBuilder().
+		WrapToGinHandler(text3OutputFunc)
+	handler(sampleContext)
+	// :~)
+
+	fmt.Printf("Resp[%d]: %s", resp.Code, resp.Body.String())
+	// Output:
+	// Resp[406]: This is fine
 }

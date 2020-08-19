@@ -9,6 +9,10 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+func init() {
+	gin.SetMode(gin.TestMode)
+}
+
 func TestByGinkgo(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	RegisterFailHandler(Fail)

@@ -1,6 +1,6 @@
-Frangipani is a poor imitation of [Spring Framework](https://spring.io/projects/spring-framework).
-
 **package**: `github.com/mikelue/go-misc/ioc/frangipani` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/frangipani)
+
+Frangipani is a poor imitation of [Spring Framework](https://spring.io/projects/spring-framework).
 
 ## Environment
 
@@ -9,13 +9,13 @@ Frangipani provides similar interface to access properties of your application.
 
 ```go
 import (
-	fg "github.com/mikelue/go-misc/ioc/frangipani"
+    fg "github.com/mikelue/go-misc/ioc/frangipani"
 )
 
 env := fg.EnvBuilder.NewByMap(
-	map[string]interface{} {
-		"v1": 20, "v2": 40,
-	},
+    map[string]interface{} {
+        "v1": 20, "v2": 40,
+    },
 )
 
 v1 := env.GetProperty("v1")
@@ -25,7 +25,7 @@ Or by [Viper](https://github.com/spf13/viper):
 ```go
 // Supports multiple objects of viper with priority by their order.
 fg.EnvBuilder.NewByViper(
-	viper1, viper2
+    viper1, viper2
 )
 
 ```
@@ -37,3 +37,14 @@ You can access current active profiles by `Environment.GetActiveProfiles()`.
 ## Profiles
 
 The property used for active profiles is `fgapp.profiles.active`.
+
+```go
+env := EnvBuilder.NewByMap(map[string]interface{}{
+    PROP_ACITVE_PROFILES: "pf1,pf2",
+})
+
+env.GetActiveProfiles()
+```
+
+<!-- vim: expandtab tabstop=4 shiftwidth=4
+-->
