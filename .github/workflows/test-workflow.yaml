@@ -1,0 +1,34 @@
+name: Tests all of the modules
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  vet-and-test:
+    name: Tests modules
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        module: ["utils", "slf4go-logrus", "ginkgo", "ioc"]
+        go-version: [ "1.17" ]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Install ginkgo
+        run: go install -mod=mod github.com/onsi/ginkgo/v2/ginkgo@latest
+      - name: Test under go-misc/${{ matrix.module }}
+        run: |
+          cd ${{ matrix.module }}
+          ginkgo run --race --vet "" ./...
