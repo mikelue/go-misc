@@ -57,16 +57,17 @@ var contextOfValueExt = func() {
 			Entry("field of pointer of struct as pointer of pointer", box3, []string{ "ChildBoxL2", "ChildBox", "Age" }, 30),
 		)
 
-		DescribeTable("Panic with non struct access",
-			func(object interface{}, tree []string) {
-				testedValueExt := ValueExtBuilder.NewByAny(object)
-				Expect(
-					func() { testedValueExt.GetFieldValue(tree...) },
-				).
-					To(PanicWith(MatchError(MatchRegexp("is not struct"))))
+		DescribeTable("Panic situation",
+			func(invalidObject interface{}, matchedError string) {
+				testedValueExt := ValueExtBuilder.NewByAny(invalidObject)
+
+				errorMatcher := MatchError(MatchRegexp(matchedError))
+				Expect(func() {
+					testedValueExt.GetFieldValue("a1")
+				}).To(PanicWith(errorMatcher))
 			},
-			Entry("non struct", 20, []string{ "Age" }),
-			Entry("field is not struct", box1, []string{ "Age", "Age2" }),
+			Entry("Non-struct", 20, "Current type is not struct"),
+			Entry("Invalid field", sampleBox{}, "is INVALID"),
 		)
 	})
 
@@ -95,6 +96,17 @@ var contextOfValueExt = func() {
 			Entry("simple type", 0, []string{ "Age" }, 98),
 			Entry("pointer", 1, []string{ "ChildBox" }, &sampleBox{ Age: 29, Name: "z0" }),
 		)
+
+		It("Set un-settable value", func() {
+			testedValueExt := ValueExtBuilder.NewByAny(sampleBox{})
+
+			Expect(func() {
+				testedValueExt.SetFieldValue(
+					ValueExtBuilder.NewByAny(20),
+					"Age",
+				)
+			}).To(PanicWith(MatchError(MatchRegexp("cannot be set"))))
+		})
 	})
 
 	Context("RecursiveIndirect", func() {
