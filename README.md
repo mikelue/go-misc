@@ -79,7 +79,7 @@ The utilities of GoLang.
 
 ### reflect
 
-Packages:
+**Packages:**
 * `github.com/mikelue/go-misc/utils/reflect` [README.md](./utils/reflect/README.md)
 * `github.com/mikelue/go-misc/utils/reflect/types` [README.md](./utils/reflect/README.md)
 
@@ -96,3 +96,9 @@ concreteValue := valueExt.RecursiveIndirect()
 
 <!-- vim: expandtab tabstop=4 shiftwidth=4
 -->
+
+## ginkgo
+
+**package**: `github.com/mikelue/go-misc/ginkgo` [README.md](./ginkgo/README.md)
+
+Some [Ginkgo](https://onsi.github.io/ginkgo/) utilities with integration with `github.com/mikelue/go-misc/utils`.
