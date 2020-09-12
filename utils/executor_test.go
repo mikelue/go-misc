@@ -189,7 +189,8 @@ var describeOfIRollbackExecBuilder = func() {
 		It("Setup has error for containers", func() {
 			err := RollbackExecutor.RunP(
 				func(Params) {},
-				&errorContainer{ false, false }, &errorContainer{ true, false },
+				&errorContainer{ setupError: false, tearDownError: false },
+				&errorContainer{ setupError: true, tearDownError: false },
 			)
 
 			Expect(err).To(MatchError("Setup-Error"))
@@ -198,7 +199,8 @@ var describeOfIRollbackExecBuilder = func() {
 		It("Teardown has error for containers", func() {
 			err := RollbackExecutor.RunP(
 				func(Params) {},
-				&errorContainer{ false, false }, &errorContainer{ false, true },
+				&errorContainer{ setupError: false, tearDownError: false },
+				&errorContainer{ setupError: false, tearDownError: true },
 			)
 
 			Expect(err).To(MatchError("TearDown-Error"))
@@ -237,7 +239,7 @@ var describeOfIRollbackExecBuilder = func() {
 
 		It("Ensure the calling of methods and callback", func() {
 			touchCallback := false
-			testedContainer := &sampleContainer{ false, false }
+			testedContainer := &sampleContainerP{ false, false }
 
 			/**
 			 * Prepares the executor
@@ -262,13 +264,73 @@ var describeOfIRollbackExecBuilder = func() {
 			// :~)
 		})
 	})
+
+	Context("Concate", func() {
+		toC := func(containerP RollbackContainerP) RollbackContainer {
+			return RollbackContainerBuilder.ToContainer(containerP)
+		}
+
+		assertCalled := func(containerP *sampleContainerP, expectedSetup bool, expectedTearDown bool) {
+			ExpectWithOffset(1, containerP.setup).To(BeEquivalentTo(expectedSetup), "Setup should be: %v", expectedSetup)
+			ExpectWithOffset(1, containerP.tearDown).To(BeEquivalentTo(expectedTearDown), "Tear down should be: %v", expectedTearDown)
+		}
+
+		When("Every container is successfully set-up/tear-down", func() {
+			It("Setup/TearDown gets called for every container", func() {
+				sampleContainers := []*sampleContainerP {
+					new(sampleContainerP), new(sampleContainerP), new(sampleContainerP),
+				}
+
+				testedContainer := RollbackContainerBuilder.Concate(
+					toC(sampleContainers[0]), toC(sampleContainers[1]), toC(sampleContainers[2]),
+				)
+
+				testedContainer.Setup()
+				testedContainer.TearDown()
+
+				assertCalled(sampleContainers[0], true, true)
+				assertCalled(sampleContainers[1], true, true)
+				assertCalled(sampleContainers[2], true, true)
+			})
+		})
+		When("Some containers are not set-up/tear-down", func() {
+			It("Some Setup/TearDown don't get called", func() {
+				errContainer := &errorContainer{
+					sampleContainerP: new(sampleContainerP),
+					setupError: true,
+				}
+				sampleContainers := []*sampleContainerP {
+					new(sampleContainerP), errContainer.sampleContainerP,
+					new(sampleContainerP),
+				}
+
+				testedContainer := RollbackContainerBuilder.Concate(
+					toC(sampleContainers[0]), toC(errContainer), toC(sampleContainers[2]),
+				)
+
+				testedContainer.Setup()
+				testedContainer.TearDown()
+
+				assertCalled(sampleContainers[0], true, true)
+				assertCalled(sampleContainers[1], true, false)
+				assertCalled(sampleContainers[2], false, false)
+			})
+		})
+	})
 }
 
 type errorContainer struct {
+	*sampleContainerP
+	params Params
+
 	setupError bool
 	tearDownError bool
 }
 func(self *errorContainer) Setup() (Params, error) {
+	if (self.sampleContainerP != nil) {
+		self.sampleContainerP.Setup()
+	}
+
 	var err error
 	if self.setupError {
 		err = fmt.Errorf("Setup-Error")
@@ -277,6 +339,10 @@ func(self *errorContainer) Setup() (Params, error) {
 	return nil, err
 }
 func(self *errorContainer) TearDown(Params) error {
+	if self.sampleContainerP != nil {
+		self.sampleContainerP.TearDown(nil)
+	}
+
 	var err error
 	if self.tearDownError {
 		err = fmt.Errorf("TearDown-Error")
@@ -302,15 +368,15 @@ func(self *numberedContainer) TearDown(Params) error {
 	return nil
 }
 
-type sampleContainer struct {
+type sampleContainerP struct {
 	setup bool
 	tearDown bool
 }
-func(self *sampleContainer) Setup() (Params, error) {
+func(self *sampleContainerP) Setup() (Params, error) {
 	self.setup = true
 	return nil, nil
 }
-func(self *sampleContainer) TearDown(Params) error {
+func(self *sampleContainerP) TearDown(Params) error {
 	/**
 	 * Only if the setup gets called
 	 */

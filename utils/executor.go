@@ -39,13 +39,12 @@ const (
 
 type Params map[string]interface{}
 
-
 // Method space to run callback with 1:M containers
-var RollbackExecutor IRollbackExecutor = 0
+var RollbackExecutor IRollbackExecutor
 
 type IRollbackExecutor int
 // Run callback with simple containers
-func (IRollbackExecutor) Run(callback func(), containers ...RollbackContainer) error {
+func (*IRollbackExecutor) Run(callback func(), containers ...RollbackContainer) error {
 	containersP := make([]RollbackContainerP, 0, len(containers))
 
 	for _, container := range containers {
@@ -55,7 +54,7 @@ func (IRollbackExecutor) Run(callback func(), containers ...RollbackContainer) e
 	return rollbackExecutorImpl(containersP).Run(callback)
 }
 // Run callback with containers having parameters
-func (IRollbackExecutor) RunP(callback func(Params), containers ...RollbackContainerP) error {
+func (*IRollbackExecutor) RunP(callback func(Params), containers ...RollbackContainerP) error {
 	return rollbackExecutorPImpl(containers).
 		Run(callback)
 }
@@ -77,24 +76,52 @@ type RollbackContainerP interface {
 }
 
 // Method space to build new instances of executors
-var RollbackContainerBuilder IRollbackContainerBuilder = 0
+var RollbackContainerBuilder IRollbackContainerBuilder
 
 type IRollbackContainerBuilder int
 
 // Converts a "RollbackExecutorP" to a "RollbackExecutor"
-func (IRollbackContainerBuilder) ToContainer(containerP RollbackContainerP) RollbackContainer {
+func (*IRollbackContainerBuilder) ToContainer(containerP RollbackContainerP) RollbackContainer {
 	return &fromPContainer{ containerP }
 }
 
 // Converts a "RollbackExecutor" to a "RollbackExecutorP"
-func (IRollbackContainerBuilder) ToContainerP(container RollbackContainer) RollbackContainerP {
+func (*IRollbackContainerBuilder) ToContainerP(container RollbackContainer) RollbackContainerP {
 	return &simpleContainerP{ container }
+}
+
+// Concatenate multiple "RollbackContainer"s as a single one.
+//
+// The following containers would not be Setup() if the setup of prior container hsa failed
+//
+// Only the containers of successful setting-up would be tear-down in reversed order.
+func (self *IRollbackContainerBuilder) Concate(containers ...RollbackContainer) RollbackContainer {
+	containersP := make([]RollbackContainerP, 0, len(containers))
+
+	for _, container := range containers {
+		containersP = append(containersP, self.ToContainerP(container))
+	}
+
+	concatContainersP := self.ConcateP(containersP...).(*concatRollbackContainersP)
+	return &concatRollbackContainers {
+		containersP: concatContainersP,
+	}
+}
+// Concatenate multiple "RollbackContainerP"s as a single one.
+
+// The following containers would not be Setup() if the setup of prior container hsa failed
+//
+// Only the containers of successful setting-up would be tear-down in reversed order.
+//
+// The parameters would be merged as arguments.
+func (*IRollbackContainerBuilder) ConcateP(containers ...RollbackContainerP) RollbackContainerP {
+	return &concatRollbackContainersP{ containers: containers }
 }
 
 // Constructs an new container with copy/removal of files.
 //
 // The copied files would be remove by the rollback.
-func (self IRollbackContainerBuilder) NewCopyFiles(dir string, files ...string) RollbackContainer {
+func (*IRollbackContainerBuilder) NewCopyFiles(dir string, files ...string) RollbackContainer {
 	return &copyFilesExecutorImpl { destDir: dir, srcFiles: files }
 }
 
@@ -103,21 +130,21 @@ func (self IRollbackContainerBuilder) NewCopyFiles(dir string, files ...string) 
 // The key of parameters for the temp directory is "PKEY_TEMP_DIR".
 //
 // The temp directory would be removed after the execution.
-func (self IRollbackContainerBuilder) NewTmpDir(tempName string) RollbackContainerP {
+func (*IRollbackContainerBuilder) NewTmpDir(tempName string) RollbackContainerP {
 	return &tempDirExecutorImpl{ tempName: tempName }
 }
 
 // Constructs an new container with creation/removal a directory.
 //
 // The directory would be removed after the execution.
-func (self IRollbackContainerBuilder) NewDir(dir string) RollbackContainer {
+func (*IRollbackContainerBuilder) NewDir(dir string) RollbackContainer {
 	return &dirExecutorImpl{ dir }
 }
 
 // Constructs an new container with modified environment.
 //
 // The "os.Environ()" would be reverted to original status after the execution.
-func (self IRollbackContainerBuilder) NewEnv(changedEnvVars map[string]string) RollbackContainer {
+func (*IRollbackContainerBuilder) NewEnv(changedEnvVars map[string]string) RollbackContainer {
 	return &envExecutorImpl{
 		changedEnvVars,
 		map[string]string{},
@@ -127,10 +154,73 @@ func (self IRollbackContainerBuilder) NewEnv(changedEnvVars map[string]string) R
 // Constructs an new container with modified working directory.
 //
 // The "os.Chdir()" would be used to revert the working dictionary.
-func (self IRollbackContainerBuilder) NewChdir(targetDir string) RollbackContainer {
+func (*IRollbackContainerBuilder) NewChdir(targetDir string) RollbackContainer {
 	return &chdirExecutorImpl{
 		targetDir: targetDir,
 	}
+}
+
+func init() {
+	RollbackExecutor = 0
+	RollbackContainerBuilder = 0
+}
+
+type concatRollbackContainers struct {
+	containersP *concatRollbackContainersP
+	params Params
+}
+func (self *concatRollbackContainers) Setup() (err error) {
+	self.params, err = self.containersP.Setup()
+	return
+}
+func (self *concatRollbackContainers) TearDown() (err error) {
+	err = self.containersP.TearDown(self.params)
+	return
+}
+
+type concatRollbackContainersP struct {
+	containers []RollbackContainerP
+	workingContainers []RollbackContainerP
+}
+func (self *concatRollbackContainersP) Setup() (params Params, err error) {
+	self.workingContainers = nil
+	workingContainers := make([]RollbackContainerP, 0, len(self.containers))
+
+	params = make(Params, len(self.containers))
+
+	/**
+	 * Stops setting-up of following containers if the prior one has failed
+	 */
+	for _, container := range self.containers {
+		currentParams, setupErr := container.Setup()
+		if setupErr != nil {
+			err = setupErr
+			break
+		}
+
+		for k, v := range currentParams {
+			params[k] = v
+		}
+
+		// Keeps the containers of successful setting-up
+		workingContainers = append(workingContainers, container)
+	}
+	// :~)
+
+	self.workingContainers = workingContainers
+
+	return
+}
+func (self *concatRollbackContainersP) TearDown(params Params) (err error) {
+	workingContainers := self.workingContainers
+
+	for i := len(workingContainers) - 1; i >= 0; i-- {
+		if tearDownErr := workingContainers[i].TearDown(params); tearDownErr != nil {
+			err = tearDownErr
+		}
+	}
+
+	return
 }
 
 type copyFilesExecutorImpl struct {
