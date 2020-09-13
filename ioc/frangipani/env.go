@@ -4,6 +4,12 @@ Environment
 An environment a container of properties and profile for your application.
 
 You can construct "Environment" by "EnvBuilder.NewByMap" or "EnvBuilder.NewByViper".
+
+Loading properties
+
+See README: https://github.com/mikelue/go-misc/blob/master/ioc/frangipani/README.md
+
+See GoDoc("frangipani/env"): https://pkg.go.dev/github.com/mikelue/go-misc/ioc/frangipani/env?tab=doc
 */
 package frangipani
 
@@ -18,8 +24,8 @@ const PROP_ACITVE_PROFILES = "fgapp.profiles.active"
 // "default" value of profile
 const DEFAULT_PROFILE = "default"
 
-// Global space to construct "Environment"
-var EnvBuilder IEnvBuilder = IEnvBuilder(0)
+// Method space to construct "Environment"
+var EnvBuilder IEnvBuilder
 
 type IEnvBuilder int
 // Constructs environment by multiple objects of "*viper.Viper".
@@ -53,6 +59,10 @@ type Environment interface {
 	// Whether or not there is viable "fgapp.profiles.active" property,
 	// the "default" profile will always be appended if it is not existing in the property.
 	GetActiveProfiles() []string
+}
+
+func init() {
+	EnvBuilder = 0
 }
 
 type mapBasedEnv struct {

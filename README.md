@@ -1,5 +1,19 @@
 This project contains experimental frameworks/libraries used in my work over GoLang.
 
+
+Table of Contents
+=================
+
+* [Projects](#projects)
+    * [IoC(Inverse of Control) Related](#iocinverse-of-control-related)
+        * [ioc/frangipani](#iocfrangipani)
+        * [ioc/gin](#iocgin)
+    * [ioc/gorm](#iocgorm)
+    * [slf4go-logrus](#slf4go-logrus)
+    * [utils](#utils)
+         * [reflect](#reflect)
+    * [ginkgo](#ginkgo)
+
 # Projects
 
 ## IoC(Inverse of Control) Related
@@ -16,6 +30,27 @@ env := EnvBuilder.NewByMap(map[string]interface{} {
     "global.v2": 40,
 })
 ```
+
+----
+
+**package**: `github.com/mikelue/go-misc/ioc/frangipani/env` [README.md](./ioc/frangipani/README.md)
+
+With `env.DefaultLoader()`, you can use the out-of-box loading mechanisms of configuration:
+
+```go
+import (
+    "github.com/mikelue/go-misc/ioc/frangipani/env"
+)
+
+env := env.DefaultLoader().
+    ParseFlags().
+    Load()
+```
+
+In above example, the environment comes from combination of configuration files(`fgapp-config.yaml`), environment variables(`$FGAPP_CONFIG_YAML`), and
+arguments(`--fgapp.config.yaml`), which may be from various sources.
+
+See [usage](./ioc/frangipani/README.md#usage)
 
 ### ioc/gin
 

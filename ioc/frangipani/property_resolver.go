@@ -9,7 +9,7 @@ import (
 )
 
 // Method space used to construct new instance of PropertyResolver
-var PropertyResolverBuilder IPropertyResolverBuilder = IPropertyResolverBuilder(0)
+var PropertyResolverBuilder IPropertyResolverBuilder
 
 type IPropertyResolverBuilder int
 // Constructs new resolvers by a map(elements are cloned shallowly)
@@ -43,7 +43,7 @@ type PropertyResolver interface {
 
 // Defines the getting of property for specific types.
 //
-// These methods is cloned from "*viper.Viper".
+// These methods are cloned from "*viper.Viper".
 //
 // See "PropertyResolver.Typed()"
 type TypedR interface {
@@ -72,7 +72,7 @@ type TypedR interface {
 // Defines the getting of property for specific types
 // (with error if the property is not existing).
 //
-// These methods is cloned from "*viper.Viper"
+// These methods are cloned from "*viper.Viper"
 //
 // See "PropertyResolver.RequiredTyped()"
 type RequiredTypedR interface {
@@ -96,6 +96,10 @@ type RequiredTypedR interface {
 
 	// See: github.com/inhies/go-bytesize
 	GetByteSize(string) (bs.ByteSize, error)
+}
+
+func init() {
+	PropertyResolverBuilder = 0
 }
 
 type mapBasedPropertyResolver map[string]interface{}

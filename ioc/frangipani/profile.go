@@ -1,5 +1,5 @@
 /*
-Profile
+Profiles
 
 The profile of application is defined by value of "fgapp.profiles.active".
 
