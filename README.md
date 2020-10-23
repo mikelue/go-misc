@@ -1,24 +1,21 @@
 This project contains experimental frameworks/libraries used in my work over GoLang.
 
-
 Table of Contents
 =================
 
-* [Projects](#projects)
-    * [IoC(Inverse of Control) Related](#iocinverse-of-control-related)
-        * [ioc/frangipani](#iocfrangipani)
-        * [ioc/gin](#iocgin)
-    * [ioc/gorm](#iocgorm)
-    * [slf4go-logrus](#slf4go-logrus)
-    * [utils](#utils)
-         * [reflect](#reflect)
-    * [ginkgo](#ginkgo)
+* [IoC(Inverse of Control) Related](#iocinverse-of-control-related)
+  * [ioc/frangipani](#iocfrangipani)
+  * [ioc/gin](#iocgin)
+  * [ioc/gorm](#iocgorm)
+  * [ioc/service](#iocservice)
+* [slf4go-logrus](#slf4go-logrus)
+* [utils](#utils)
+  * [reflect](#reflect)
+* [ginkgo](#ginkgo)
 
-# Projects
+# IoC(Inverse of Control) Related
 
-## IoC(Inverse of Control) Related
-
-### ioc/frangipani
+## ioc/frangipani
 
 A poor imitation of SpringFramework of Java.
 
@@ -52,7 +49,7 @@ arguments(`--fgapp.config.yaml`), which may be from various sources.
 
 See [usage](./ioc/frangipani/README.md#usage)
 
-### ioc/gin
+## ioc/gin
 
 **package**: `github.com/mikelue/go-misc/ioc/gin` [README.md](./ioc/gin/README.md)
 
@@ -77,7 +74,7 @@ func yourHandler(
     return igin.JsonOutputHandler(http.StatusOK, &yourResult{})
 }
 ```
-### ioc/gorm
+## ioc/gorm
 
 **package**: `github.com/mikelue/go-misc/ioc/gorm` [README.md](./ioc/gorm/README.md)
 
@@ -92,7 +89,38 @@ tmpl := NewDbTemplate(db)
 tmpl.Create(newObject)
 ```
 
-## slf4go-logrus
+## ioc/service
+
+**Packages**:
+* `github.com/mikelue/go-misc/ioc/service` [README.md](./ioc/service/README.md)
+* `github.com/mikelue/go-misc/ioc/service/http` [README.md](./ioc/service/http/README.md)
+
+This package provides controller to start/stop multiple services with trapping of [os signal](https://pkg.go.dev/os#Signal).
+
+You can start multiple services in your `main()` and stop them by trapping desired [signals(IPC)](https://en.wikipedia.org/wiki/Signal_(IPC)).
+
+```go
+
+// The objects implements "service.Service" interface.
+
+func main() {
+  srv1 := service.ServiceBuilder.New(initSrv1())
+  srv2 := service.ServiceBuilder.New(initSrv2())
+
+  signalChan := make(chan os.Signal, 1)
+  defer close(signalChan)
+
+  ctrl := service.ServiceControllerBuilder.ByTrapSignals(service.DEFAULT_STOP_SIGNALS...)
+  ctrl.StartService(srv1)
+  ctrl.StartService(srv2)
+
+  ctrl.WaitForStop()
+}
+```
+
+`github.com/mikelue/go-misc/ioc/service/http` has some wrapping method to construct a service by [http.Server](https://pkg.go.dev/net/http#Server).
+
+# slf4go-logrus
 
 **package**: `github.com/mikelue/go-misc/slf4go-logrus` [README.md](./slf4go-logrus/README.md)
 
@@ -106,13 +134,13 @@ UseLogrus.WithConfig(LogrousConfig{
 })
 ```
 
-## utils
+# utils
 
 **package**: `github.com/mikelue/go-misc/utils` [README.md](./utils/README.md)
 
 The utilities of GoLang.
 
-### reflect
+## reflect
 
 **Packages:**
 * `github.com/mikelue/go-misc/utils/reflect` [README.md](./utils/reflect/README.md)
@@ -132,7 +160,7 @@ concreteValue := valueExt.RecursiveIndirect()
 <!-- vim: expandtab tabstop=4 shiftwidth=4
 -->
 
-## ginkgo
+# ginkgo
 
 **package**: `github.com/mikelue/go-misc/ginkgo` [README.md](./ginkgo/README.md)
 
