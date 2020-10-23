@@ -1,6 +1,6 @@
 **package**: `github.com/mikelue/go-misc/ioc/service` [GoDoc](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/service)
 
-This package provides easy way to start multiple backgound services and stop them by desired [signal(IPC)](https://en.wikipedia.org/wiki/Signal_(IPC)).
+This package provides easy way to start multiple background services and stop them by desired [signal(IPC)](https://en.wikipedia.org/wiki/Signal_(IPC)).
 
 Table of Contents
 =================
@@ -12,9 +12,9 @@ Table of Contents
 
 # Service
 
-`Service` is the main interface you should implemnt to **start/stop** your service.
+`Service` is the main interface you should implement to **start/stop** your service.
 
-For method of `Start(context) and Stop(context)`, you just block the thread executing your code.
+For method of `Start(context) and Stop(context)`, you just block the thread in your code.
 
 ```go
 type yourService struct {}
@@ -26,7 +26,7 @@ func (*yourService) Stop(context.Context) error {
 
 ## ServiceRunner
 
-The needed object to be run is the struct `ServiceRunner`,
+The needed object to be run is the struct of `ServiceRunner`,
 it is responsible for additional information of a service.
 
 ```go

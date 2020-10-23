@@ -93,7 +93,7 @@ tmpl.Create(newObject)
 
 **Packages**:
 * `github.com/mikelue/go-misc/ioc/service` [README.md](./ioc/service/README.md)
-* `github.com/mikelue/go-misc/ioc/service/http` [README.md](./ioc/service/http/README.md)
+* `github.com/mikelue/go-misc/ioc/service/http` [README.md](./ioc/service/README.md)
 
 This package provides controller to start/stop multiple services with trapping of [os signal](https://pkg.go.dev/os#Signal).
 
