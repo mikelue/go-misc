@@ -98,6 +98,10 @@ func (self *logrusDriver) Print(l *l4.Log) {
 
 	// The LogEntry of Cloud Logging(GCP)
 	fields["logName"] = l.Logger
+	// The data field used by
+	// https://github.com/icco/logrus-stackdriver-formatter,
+	// which is the part of logName
+	fields["logID"] = l.Logger
 
 	// :~)
 
