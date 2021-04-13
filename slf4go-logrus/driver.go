@@ -95,7 +95,10 @@ func (self *logrusDriver) Print(l *l4.Log) {
 	if l.Fields != nil {
 		fields = lr.Fields(l.Fields)
 	}
-	fields["logger"] = l.Logger
+
+	// The LogEntry of Cloud Logging(GCP)
+	fields["logName"] = l.Logger
+
 	// :~)
 
 	/**
