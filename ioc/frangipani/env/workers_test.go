@@ -3,7 +3,7 @@ package env
 import (
 	"github.com/mikelue/go-misc/utils"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 

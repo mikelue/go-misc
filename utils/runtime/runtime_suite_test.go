@@ -3,8 +3,7 @@ package runtime
 import (
 	"testing"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	. "github.com/onsi/ginkgo/v2"
 )
 
 func TestByGinkgo(t *testing.T) {

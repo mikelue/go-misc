@@ -1,22 +1,23 @@
 package env
 
 import (
-	"github.com/spf13/pflag"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/spf13/pflag"
 
 	fg "github.com/mikelue/go-misc/ioc/frangipani"
 	"github.com/mikelue/go-misc/utils"
 	"github.com/spf13/viper"
 	"github.com/thoas/go-funk"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	. "github.com/onsi/ginkgo/extensions/table"
 )
 
-var _ = Describe("Load configurata and active profiles(properties)", func() {
+var _ = Describe("Load configuration and active profiles(properties)", func() {
 	Context("ConfigBuilder", contextOfConfigBuilder)
 
 	Context("1st Pass", contextOf1stPass)
@@ -151,13 +152,23 @@ var contextOf1stPass = func() {
 		return loader().pass1Load()
 	}
 
+	// Since "ginkgo run" is differ from "go test" for the
+	// current working directory while running tests,
+	// the former way to run tests would remove "lime-config...yaml" files.
 	copyFiles := func(dir string) utils.RollbackContainer {
-		return utils.RollbackContainerBuilder.NewCopyFiles(
-			dir,
-			fmt.Sprintf("%s/lime-config.yaml", currentSrcDir),
-			fmt.Sprintf("%s/lime-config-p1.yaml", currentSrcDir),
-			fmt.Sprintf("%s/lime-config-p2.yaml", currentSrcDir),
-		)
+		_, err := os.Stat(fmt.Sprintf("%s/lime-config.yaml", dir))
+
+		if errors.Is(err, os.ErrNotExist) {
+			return utils.RollbackContainerBuilder.NewCopyFiles(
+				dir,
+				fmt.Sprintf("%s/lime-config.yaml", currentSrcDir),
+				fmt.Sprintf("%s/lime-config-p1.yaml", currentSrcDir),
+				fmt.Sprintf("%s/lime-config-p2.yaml", currentSrcDir),
+			)
+		} else {
+			// Do nothing
+			return utils.RollbackContainerBuilder.NewCopyFiles(dir)
+		}
 	}
 
 	assertEnvByFile := func(env fg.Environment) {
@@ -199,7 +210,7 @@ var contextOf1stPass = func() {
 		Expect(err).To(Succeed())
 	})
 
-	It("Loads by environment", func() {
+	It("Load by environment", func() {
 		envContainer := utils.RollbackContainerBuilder.NewEnv(
 			map[string]string {
 				"LIME_CONFIG_YAML": `{ cv_1: 91 }`,
@@ -230,7 +241,7 @@ var contextOf1stPass = func() {
 		Expect(err).To(Succeed())
 	})
 
-	It("Loads by current directory", func() {
+	It("Load by current directory", func() {
 		err := utils.RollbackExecutor.Run(
 			func() {
 				/**
@@ -245,7 +256,7 @@ var contextOf1stPass = func() {
 		Expect(err).To(Succeed())
 	})
 
-	It("Loads by directory of executable", func() {
+	It("Load by directory of executable", func() {
 		executableDir, _ := filepath.Abs(os.Args[0])
 		executableDir = filepath.Dir(executableDir)
 

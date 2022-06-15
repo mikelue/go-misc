@@ -6,8 +6,7 @@ import (
 	l4 "github.com/go-eden/slf4go"
 	lr "github.com/sirupsen/logrus"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/ginkgo/extensions/table"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
