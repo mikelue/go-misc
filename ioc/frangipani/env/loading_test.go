@@ -165,10 +165,9 @@ var contextOf1stPass = func() {
 				fmt.Sprintf("%s/lime-config-p1.yaml", currentSrcDir),
 				fmt.Sprintf("%s/lime-config-p2.yaml", currentSrcDir),
 			)
-		} else {
-			// Do nothing
-			return utils.RollbackContainerBuilder.NewCopyFiles(dir)
 		}
+
+		return utils.EmptyRollbackContainer
 	}
 
 	assertEnvByFile := func(env fg.Environment) {
