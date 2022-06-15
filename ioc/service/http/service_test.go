@@ -29,14 +29,14 @@ var _ = Describe("HTTP service", func() {
 				},
 			)
 
-			var startError error
+			var errorBox chan error = make(chan error, 1)
 
 			/**
 			 * Starts HTTP service
 			 */
 			By("Starting HTTP Service")
 			go func() {
-				startError = testedService.Start(context.TODO())
+				errorBox <- testedService.Start(context.TODO())
 			}()
 			<-time.After(2 * time.Second)
 			// :~)
@@ -62,7 +62,9 @@ var _ = Describe("HTTP service", func() {
 			/**
 			 * Asserts the starting result has no error(exclude ErrServerClosed)
 			 */
-			Expect(startError).Should(Succeed())
+			Expect(errorBox).Should(Receive(
+				Succeed(),
+			))
 			// :~)
 		})
 	})

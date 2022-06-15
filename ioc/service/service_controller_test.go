@@ -1,9 +1,10 @@
 package service
 
 import (
-	"os"
-	"time"
 	"context"
+	"os"
+	"sync"
+	"time"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -11,8 +12,8 @@ import (
 
 var _ = Describe("ServiceController", func() {
 	allServices := sampleServices {
-		&timedService{ false, 100 * time.Millisecond },
-		&timedService{ false, 100 * time.Millisecond },
+		&timedService{ false, 100 * time.Millisecond, sync.Mutex{} },
+		&timedService{ false, 100 * time.Millisecond, sync.Mutex{} },
 	}
 
 	startServices := func(ctrl ServiceController) {
@@ -24,10 +25,11 @@ var _ = Describe("ServiceController", func() {
 		).Should(BeTrue())
 	}
 	assertStop := func(ctrl ServiceController) {
-		hasStopped := false
+		stopBox := make(chan bool, 0)
+
 		go func() {
 			ctrl.WaitForStop()
-			hasStopped = true
+			stopBox <- true
 		} ()
 
 		Eventually(
@@ -36,7 +38,7 @@ var _ = Describe("ServiceController", func() {
 		).Should(BeFalse())
 
 		Eventually(
-			func() bool { return hasStopped },
+			func() bool { return <-stopBox },
 			2 * time.Second, time.Second,
 		).Should(BeTrue())
 	}
@@ -109,7 +111,7 @@ var _ = Describe("ServiceController", func() {
 type sampleServices []*timedService
 func (self sampleServices) allStatus() bool {
 	for _, service := range self {
-		if !service.running {
+		if !service.getStatus() {
 			return false
 		}
 	}
@@ -127,13 +129,14 @@ func (self sampleServices) startAll(ctrl ServiceController) {
 type timedService struct {
 	running bool
 	shutdownWait time.Duration
+	lock sync.Mutex
 }
 func (self *timedService) Start(context context.Context) error {
-	self.running = true
-	for self.running {
+	self.setStatus(true)
+	for self.getStatus() {
 		select {
 		case <-context.Done():
-			self.running = false
+			self.setStatus(false)
 		case <-time.After(3 * time.Second):
 		}
 	}
@@ -141,7 +144,17 @@ func (self *timedService) Start(context context.Context) error {
 	return nil
 }
 func (self *timedService) Stop(context context.Context) error {
-	self.running = false
+	self.setStatus(false)
 	<-time.After(self.shutdownWait)
 	return nil
+}
+func (self *timedService) setStatus(value bool) {
+	self.lock.Lock()
+	defer self.lock.Unlock()
+	self.running = value
+}
+func (self *timedService) getStatus() bool {
+	self.lock.Lock()
+	defer self.lock.Unlock()
+	return self.running
 }
