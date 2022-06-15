@@ -1,6 +1,7 @@
 package gin
 
 import (
+	"net/http"
 	"fmt"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -49,21 +50,22 @@ var itForHandlers = func() {
 			testedResp := testedRespRecorder.Result()
 			Expect(testedResp.StatusCode).To(BeEquivalentTo(sampleStatus))
 			Expect(testedResp.Header.Get("Content-Type")).To(ContainSubstring(expectedContentType))
-			Eventually(BufferReader(testedResp.Body)).Should(Say(sampleBody))
+			Eventually(BufferReader(testedResp.Body)).
+				Should(Say(sampleBody))
 		},
-		Entry("JsonOutputHandler", 14, "[11, 21]", JsonOutputHandler, "application/json"),
-		Entry("TextOutputHandler", 19, "Hello World!", TextOutputHandler, "text/plain"),
-		Entry("XmlOutputHandler", 33, "Hello", XmlOutputHandler, "application/xml"),
-		Entry("YamlOutputHandler", 49, "{ a: 20, b: 40 }", YamlOutputHandler, "application/x-yaml"),
+		Entry("JsonOutputHandler", http.StatusFound, "[11, 21]", JsonOutputHandler, "application/json"),
+		Entry("TextOutputHandler", http.StatusOK, "Hello World!", TextOutputHandler, "text/plain"),
+		Entry("XmlOutputHandler", http.StatusConflict, "Hello", XmlOutputHandler, "application/xml"),
+		Entry("YamlOutputHandler", http.StatusCreated, "{ a: 20, b: 40 }", YamlOutputHandler, "application/x-yaml"),
 	)
 
 	It("ProtoBufOutputHandler", func() {
 		context, testedRespRecorder := newContext()
 		sampleProtobuf := newPanda("Burton", 23)
-		ProtoBufOutputHandler(88, sampleProtobuf).Output(context)
+		ProtoBufOutputHandler(http.StatusOK, sampleProtobuf).Output(context)
 
 		testedResp := testedRespRecorder.Result()
-		Expect(testedResp.StatusCode).To(BeEquivalentTo(88))
+		Expect(testedResp.StatusCode).To(BeEquivalentTo(http.StatusOK))
 		Expect(testedResp.Header.Get("Content-Type")).To(ContainSubstring("application/x-protobuf"))
 		Eventually(BufferReader(testedResp.Body)).Should(Say("Burton"))
 	})
