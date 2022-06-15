@@ -11,6 +11,22 @@ import (
 
 var _ = Describe("Rollback executors", func() {
 	Describe("By IRollbackExecBuilder", describeOfIRollbackExecBuilder)
+
+	It("Empty rollback container", func() {
+		err := RollbackExecutor.Run(
+			func() { },
+			EmptyRollbackContainer, EmptyRollbackContainer,
+		)
+		Expect(err).To(Succeed())
+	})
+
+	It("Empty rollback container(P)", func() {
+		err := RollbackExecutor.RunP(
+			func(Params) { },
+			EmptyRollbackContainerP, EmptyRollbackContainerP,
+		)
+		Expect(err).To(Succeed())
+	})
 })
 
 var describeOfIRollbackExecBuilder = func() {

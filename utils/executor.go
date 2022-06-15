@@ -75,6 +75,28 @@ type RollbackContainerP interface {
 	TearDown(Params) error
 }
 
+// Empty rollback container, do nothing.
+const EmptyRollbackContainer emptyRollbackContainer = 0
+
+type emptyRollbackContainer int
+func (emptyRollbackContainer) Setup() error {
+	return nil
+}
+func (emptyRollbackContainer) TearDown() error {
+	return nil
+}
+
+// Empty rollback container with parameters, do nothing.
+const EmptyRollbackContainerP emptyRollbackContainerP = 0
+
+type emptyRollbackContainerP int
+func (emptyRollbackContainerP) Setup() (Params, error) {
+	return nil, nil
+}
+func (emptyRollbackContainerP) TearDown(Params) (error) {
+	return nil
+}
+
 // Method space to build new instances of executors
 var RollbackContainerBuilder IRollbackContainerBuilder
 
