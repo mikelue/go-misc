@@ -1,4 +1,6 @@
-This project contains experimental frameworks/libraries used in my work over GoLang.
+This project contains experimental frameworks/libraries used in my work over GoLang. [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+
+[![Tests all of the modules](https://github.com/mikelue/go-misc/actions/workflows/test-workflow.yaml/badge.svg)](https://github.com/mikelue/go-misc/actions/workflows/test-workflow.yaml) [![codecov](https://codecov.io/gh/mikelue/go-misc/branch/master/graph/badge.svg?token=5C7MJP5G6D)](https://codecov.io/gh/mikelue/go-misc)
 
 Table of Contents
 =================
@@ -15,7 +17,7 @@ Table of Contents
 
 # IoC(Inverse of Control) Related
 
-## ioc/frangipani
+## ioc/frangipani [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/ioc/frangipani.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/frangipani)
 
 A poor imitation of SpringFramework of Java.
 
@@ -49,7 +51,7 @@ arguments(`--fgapp.config.yaml`), which may be from various sources.
 
 See [usage](./ioc/frangipani/README.md#usage)
 
-## ioc/gin
+## ioc/gin [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/ioc/gin.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gin)
 
 **package**: `github.com/mikelue/go-misc/ioc/gin` [README.md](./ioc/gin/README.md)
 
@@ -74,7 +76,7 @@ func yourHandler(
     return igin.JsonOutputHandler(http.StatusOK, &yourResult{})
 }
 ```
-## ioc/gorm
+## ioc/gorm [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/ioc/gorm.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/gorm)
 
 **package**: `github.com/mikelue/go-misc/ioc/gorm` [README.md](./ioc/gorm/README.md)
 
@@ -89,7 +91,7 @@ tmpl := NewDbTemplate(db)
 tmpl.Create(newObject)
 ```
 
-## ioc/service
+## ioc/service [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/ioc/service.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/ioc/service)
 
 **Packages**:
 * `github.com/mikelue/go-misc/ioc/service` [README.md](./ioc/service/README.md)
@@ -120,7 +122,7 @@ func main() {
 
 `github.com/mikelue/go-misc/ioc/service/http` has some wrapping method to construct a service by [http.Server](https://pkg.go.dev/net/http#Server).
 
-# slf4go-logrus
+# slf4go-logrus [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/slf4go-logrus.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/slf4go-logrus)
 
 **package**: `github.com/mikelue/go-misc/slf4go-logrus` [README.md](./slf4go-logrus/README.md)
 
@@ -134,7 +136,7 @@ UseLogrus.WithConfig(LogrousConfig{
 })
 ```
 
-# utils
+# utils [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/utils.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/utils)
 
 **package**: `github.com/mikelue/go-misc/utils` [README.md](./utils/README.md)
 
@@ -160,7 +162,7 @@ concreteValue := valueExt.RecursiveIndirect()
 <!-- vim: expandtab tabstop=4 shiftwidth=4
 -->
 
-# ginkgo
+# ginkgo [![Go Reference](https://pkg.go.dev/badge/github.com/mikelue/go-misc/ginkgo.svg)](https://pkg.go.dev/github.com/mikelue/go-misc/ginkgo)
 
 **package**: `github.com/mikelue/go-misc/ginkgo` [README.md](./ginkgo/README.md)
 
